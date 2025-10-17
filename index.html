@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroMont Agrimensura</title>
+    <meta name="description" content="AgroMont Agrimensura - Serviços profissionais de topografia, georreferenciamento e agrimensura em Morro Agudo">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Variáveis do Modo Escuro... */
+            --dark-primary: #4CAF50;
+            --dark-secondary: #66BB6A;
+            --dark-accent: #95d437;
+            --dark-accent-alt: #81C784;
+            --dark-text-primary: #FFFFFF;
+            --dark-text-secondary: #E0E0E0;
+            --dark-neutral-light: #2C2C2C;
+            --dark-background: #121212;
+            --dark-background-elevated: #1E1E1E;
+            --dark-surface: #1E1E1E;
+            --dark-border: #333333;
+            --dark-topography: #424242;
+            --dark-compass: #4DB6AC;
+            /* Paleta de Cores... */
+            --primary-color: #1B5E20;
+            --secondary-color: #2E7D32;
+            --accent-color: #95d437;
+            --accent-alt-color: #388E3C;
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A4A4A;
+            --background: #FAFAFA;
+            --surface: #FFFFFF;
+            --neutral-light: #F5F5F5;
+            --topography-lines: #BDBDBD;
+            --compass-blue: #00695C;
+            --border-color: #E0E0E0;
+            
+            /* Tipografia da Fonte... */
+            --font-primary: 'Roboto', sans-serif;
+            --font-secondary: 'Open Sans', sans-serif;
+            
+            /* Espaços... */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --space-3xl: 4rem;
+            
+            /* Sombras... */
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            
+            /* Transições */
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+            
+            /* Animações Variadas */
+            --animation-duration-fast: 200ms;
+            --animation-duration-normal: 300ms;
+            --animation-duration-slow: 500ms;
+            --animation-easing-standard: cubic-bezier(0.4, 0.0, 0.2, 1);
+            --animation-easing-decelerate: cubic-bezier(0.0, 0.0, 0.2, 1);
+            --animation-easing-accelerate: cubic-bezier(0.4, 0.0, 1, 1);
+            --animation-stagger-delay: 100ms;
+        }
+        
+        /* Modo Escuro */
+        [data-theme="dark"] {
+            --primary-color: var(--dark-primary);
+            --secondary-color: var(--dark-secondary);
+            --accent-color: var(--dark-accent);
+            --accent-alt-color: var(--dark-accent-alt);
+            --text-primary: var(--dark-text-primary);
+            --text-secondary: var(--dark-text-secondary);
+            --background: var(--dark-background);
+            --surface: var(--dark-surface);
+            --neutral-light: var(--dark-neutral-light);
+            --topography-lines: var(--dark-topography);
+            --compass-blue: var(--dark-compass);
+            --border-color: var(--dark-border);
+        }
+        
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Reduced motion accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        body {
+            font-family: var(--font-primary);
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--background);
+            overflow-x: hidden;
+            transition: background-color var(--animation-duration-normal) var(--animation-easing-standard), 
+                       color var(--animation-duration-normal) var(--animation-easing-standard);
+        }
+        
+        /* Header */
+        .header {
+            background: var(--surface);
+            box-shadow: var(--shadow-md);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: var(--transition-normal);
+        }
+        
+        .header.scrolled {
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 var(--space-lg);
+            height: 70px;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            color: var(--accent-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-right: var(--space-sm);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            border-radius: 10px;
+            z-index: -1;
+        }
+        
+        .logo i {
+            color: var(--accent-color);
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: var(--space-xl);
+            transition: all var(--animation-duration-normal) var(--animation-easing-standard);
+        }
+        
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: var(--transition-fast);
+            position: relative;
+        }
+        
+        .nav-menu a:hover {
+            color: var(--primary-color);
+        }
+        
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+            transition: width var(--animation-duration-normal) var(--animation-easing-decelerate);
+        }
+        
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-contact {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            font-size: 0.9rem;
+        }
+        
+        .nav-contact span {
+            color: var(--text-secondary);
+        }
+        
+        .nav-contact strong {
+            color: var(--primary-color);
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--border-color);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all var(--animation-duration-normal) var(--animation-easing-standard);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: var(--space-lg);
+        }
+        
+        .theme-toggle:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .theme-toggle i {
+            transition: transform var(--animation-duration-normal) var(--animation-easing-standard);
+        }
+        
+        .theme-toggle:hover i {
+            transform: rotate(180deg);
+        }
+        
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: transform var(--animation-duration-fast) var(--animation-easing-standard);
+        }
+        
+        .mobile-menu-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Keyframe Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: -200px 0;
+            }
+            100% {
+                background-position: calc(200px + 100%) 0;
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        @keyframes counterAnimation {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: 
+                linear-gradient(135deg, 
+                    rgba(27, 94, 32, 0.85) 0%, 
+                    rgba(46, 125, 50, 0.8) 100%
+                ),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500"><defs><pattern id="topo" patternUnits="userSpaceOnUse" width="120" height="120"><path d="M10 60c25-15 35-35 60-25s50 25 75 15" stroke="white" stroke-width="0.8" fill="none" opacity="0.2"/><path d="M20 90c20-12 30-30 50-20s40 20 65 12" stroke="white" stroke-width="0.6" fill="none" opacity="0.15"/><path d="M5 30c30-10 40-20 70-15s45 15 70 5" stroke="white" stroke-width="0.4" fill="none" opacity="0.1"/><circle cx="15" cy="15" r="1" fill="white" opacity="0.1"/><circle cx="85" cy="45" r="1" fill="white" opacity="0.1"/><circle cx="45" cy="75" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100%" height="100%" fill="url(#topo)"/></svg>');
+            background-size: 300px 300px, cover;
+            background-position: center, center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: var(--space-xl);
+            margin-top: 70px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+            pointer-events: none;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            color: white;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: var(--space-lg);
+            line-height: 1.2;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.4rem;
+            margin-bottom: var(--space-2xl);
+            opacity: 0.95;
+            font-family: var(--font-secondary);
+        }
+        
+        .cta-button {
+            background: linear-gradient(135deg, var(--accent-color), #B8941F);
+            color: white;
+            padding: var(--space-lg) var(--space-2xl);
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            transition: all var(--animation-duration-normal) var(--animation-easing-standard);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+            animation: pulse 2s infinite;
+        }
+        
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s;
+        }
+        
+        .cta-button:hover::before {
+            left: 100%;
+        }
+        
+        .cta-button:hover {
+            background: linear-gradient(135deg, #B8941F, var(--accent-color));
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+        }
+        
+        .cta-button i {
+            transition: transform var(--animation-duration-normal) var(--animation-easing-standard);
+        }
+        
+        .cta-button:hover i {
+            transform: translateX(5px);
+        }
+        
+        /* Sections */
+        .section {
+            padding: var(--space-3xl) var(--space-lg);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: var(--space-xl);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--accent-color);
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-2xl);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* About Section */
+        .about {
+            background: var(--surface);
+        }
+        
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-2xl);
+            align-items: center;
+        }
+        
+        .about-content h3 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .about-content p {
+            margin-bottom: var(--space-lg);
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-lg);
+            margin-top: var(--space-2xl);
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: var(--space-lg);
+            background: var(--neutral-light);
+            border-radius: 10px;
+            transition: all var(--animation-duration-normal) var(--animation-easing-standard);
+            border: 1px solid var(--border-color);
+        }
+        
+        .stat-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            background: var(--surface);
+        }
+        
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            display: block;
+            animation: counterAnimation var(--animation-duration-slow) var(--animation-easing-decelerate);
+        }
+        
+        .stat-number.counting {
+            animation: pulse 0.5s ease-in-out;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        /* Services Section */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--space-xl);
+        }
+        
+        .service-card {
+            background: var(--surface);
+            padding: var(--space-2xl);
+            border-radius: 15px;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--animation-duration-normal) var(--animation-easing-standard);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            opacity: 0;
+            transition: opacity var(--animation-duration-normal) var(--animation-easing-standard);
+            z-index: 1;
+        }
+        
+        .service-card * {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border-color: var(--primary-color);
+        }
+        
+        .service-card:hover::before {
+            opacity: 0.03;
+        }
+        
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(5deg);
+            animation: float 2s ease-in-out infinite;
+        }
+        
+        .service-card:hover h3 {
+            color: var(--accent-color);
+        }
+        
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-lg);
+            font-size: 1.5rem;
+            transition: all var(--animation-duration-normal) var(--animation-easing-standard);
+            box-shadow: 0 4px 15px rgba(27, 94, 32, 0.3);
+        }
+        
+        .service-card h3 {
+            color: var(--primary-color);
+            margin-bottom: var(--space-md);
+            font-size: 1.3rem;
+        }
+        
+        .service-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        
+        /* Team Section */
+        .team {
+            background: var(--surface);
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-xl);
+        }
+        
+        .team-card {
+            background: var(--surface);
+            border-radius: 15px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: all var(--animation-duration-normal) var(--animation-easing-standard);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .team-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color), var(--secondary-color));
+            border-radius: 17px;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity var(--animation-duration-normal) var(--animation-easing-standard);
+        }
+        
+        .team-card:hover {
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+            transform: translateY(-5px) scale(1.02);
+        }
+        
+        .team-card:hover::before {
+            opacity: 1;
+        }
+        
+        .team-card.expanded {
+            transform: scale(1.02);
+            z-index: 10;
+        }
+        
+        .team-card.expanded::before {
+            opacity: 1;
+        }
+        
+        .team-card-header {
+            padding: var(--space-xl);
+            text-align: center;
+            position: relative;
+        }
+        
+        .team-avatar {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-lg);
+            font-size: 1.8rem;
+        }
+        
+        .team-name {
+            color: var(--primary-color);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .team-title {
+            color: var(--accent-color);
+            font-weight: 500;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .team-short {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .expand-icon {
+            position: absolute;
+            top: var(--space-lg);
+            right: var(--space-lg);
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            transition: all var(--animation-duration-normal) var(--animation-easing-standard);
+            background: rgba(255,255,255,0.9);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .team-card.expanded .expand-icon {
+            transform: rotate(180deg);
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .expand-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .team-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--animation-duration-slow) var(--animation-easing-decelerate),
+                       opacity var(--animation-duration-normal) var(--animation-easing-standard);
+            opacity: 0;
+        }
+        
+        .team-card.expanded .team-content {
+            max-height: 300px;
+            opacity: 1;
+        }
+        
+        .team-description {
+            padding: 0 var(--space-xl) var(--space-xl);
+            color: var(--text-secondary);
+            line-height: 1.7;
+            border-top: 1px solid var(--border-color);
+            background: var(--neutral-light);
+            animation: slideInLeft var(--animation-duration-normal) var(--animation-easing-decelerate);
+        }
+        
+        .team-description {
+            padding: 0 var(--space-xl) var(--space-xl);
+            color: var(--text-secondary);
+            line-height: 1.7;
+            border-top: 1px solid var(--border-color);
+            background: var(--neutral-light);
+        }
+        
+        /* Location Section */
+        .location-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-2xl);
+            align-items: start;
+        }
+        
+        .location-info {
+            padding: var(--space-xl);
+        }
+        
+        .location-info h3 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .address-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+            padding: var(--space-md);
+            background: var(--surface);
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .address-item i {
+            color: var(--primary-color);
+            margin-right: var(--space-md);
+            width: 20px;
+            text-align: center;
+        }
+        
+        .map-container {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            height: 400px;
+        }
+        
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Contact Section */
+        .contact {
+            background: var(--surface);
+        }
+        
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-2xl);
+        }
+        
+        .contact-form {
+            background: var(--neutral-light);
+            padding: var(--space-2xl);
+            border-radius: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: var(--space-sm);
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: var(--space-md);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all var(--animation-duration-normal) var(--animation-easing-standard);
+            background: var(--surface);
+            color: var(--text-primary);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(27, 94, 32, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .form-control:hover {
+            border-color: var(--primary-color);
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .submit-button {
+            background: linear-gradient(135deg, var(--accent-color), #B8941F);
+            color: white;
+            padding: var(--space-md) var(--space-2xl);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--animation-duration-normal) var(--animation-easing-standard);
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submit-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .submit-button:hover::before {
+            left: 100%;
+        }
+        
+        .submit-button:hover {
+            background: linear-gradient(135deg, #B8941F, var(--accent-color));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .submit-button:active {
+            transform: translateY(0);
+        }
+        
+        .contact-info h3 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: var(--space-lg);
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--primary-color);
+            color: white;
+            padding: var(--space-2xl) var(--space-lg) var(--space-lg);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-2xl);
+        }
+        
+        .footer-section h4 {
+            color: var(--accent-color);
+            margin-bottom: var(--space-lg);
+            font-size: 1.2rem;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .footer-section ul li a {
+            color: white;
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        
+        .footer-section ul li a:hover {
+            color: var(--accent-color);
+        }
+        
+        .footer-bottom {
+            margin-top: var(--space-xl);
+            padding-top: var(--space-lg);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--surface);
+                flex-direction: column;
+                padding: var(--space-lg);
+                box-shadow: var(--shadow-lg);
+                backdrop-filter: blur(10px);
+                border: 1px solid var(--border-color);
+                border-top: none;
+                transform: translateY(-10px);
+                opacity: 0;
+                transition: all var(--animation-duration-normal) var(--animation-easing-standard);
+            }
+            
+            .nav-menu.active {
+                display: flex;
+                transform: translateY(0);
+                opacity: 1;
+            }
+            
+            .nav-menu.active li {
+                animation: slideInLeft var(--animation-duration-normal) var(--animation-easing-decelerate);
+                animation-fill-mode: both;
+            }
+            
+            .nav-menu.active li:nth-child(1) { animation-delay: 0ms; }
+            .nav-menu.active li:nth-child(2) { animation-delay: 50ms; }
+            .nav-menu.active li:nth-child(3) { animation-delay: 100ms; }
+            .nav-menu.active li:nth-child(4) { animation-delay: 150ms; }
+            .nav-menu.active li:nth-child(5) { animation-delay: 200ms; }
+            .nav-menu.active li:nth-child(6) { animation-delay: 250ms; }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .nav-contact {
+                display: none;
+            }
+            
+            .theme-toggle {
+                margin-left: var(--space-md);
+                width: 40px;
+                height: 40px;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .about-grid,
+            .location-grid,
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: var(--space-2xl) var(--space-md);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .nav-container {
+                padding: 0 var(--space-md);
+            }
+            
+            .service-card,
+            .team-card {
+                margin: 0 var(--space-sm);
+            }
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Scroll reveal animations */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="nav-container">
+            <a href="#home" class="logo">
+                <div class="logo-icon">
+                    <img src="Agrologo.png" alt="Logo AgroMont Agrimensura" height="48" />
+                </div>
+                AgroMont
+            </a>
+            
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home">Início</a></li>
+                <li><a href="#about">Sobre</a></li>
+                <li><a href="#services">Serviços</a></li>
+                <li><a href="#team">Equipe</a></li>
+                <li><a href="#location">Localização</a></li>
+                <li><a href="#contact">Contato</a></li>
+            </ul>
+            
+            <div class="nav-contact">
+                <span>agromontgeo@gmail.com</span>
+                <strong>(16) 98193-8165</strong>
+            </div>
+            
+            <button class="theme-toggle" id="themeToggle" title="Alternar tema">
+                <i class="fas fa-moon"></i>
+            </button>
+            
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content scroll-reveal">
+            <h1 class="hero-title">Precisão e Tecnologia em Topografia</h1>
+            <p class="hero-subtitle">Soluções completas em agrimensura, georreferenciamento e levantamentos topográficos com a mais alta precisão técnica.</p>
+            <a href="#contact" class="cta-button">
+                <i class="fas fa-paper-plane"></i>
+                Solicitar Serviços
+            </a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section about" id="about">
+        <div class="container">
+            <h2 class="section-title scroll-reveal">Sobre a AgroMont</h2>
+            <div class="about-grid">
+                <div class="about-content scroll-reveal">
+                    <h3>Excelência em Agrimensura</h3>
+                    <p>Somos especializados em serviços de topografia, georreferenciamento e agrimensura, oferecendo soluções técnicas de alta precisão para projetos rurais e urbanos.</p>
+                    <p>Nossa equipe combina experiência profissional com tecnologia de ponta, garantindo resultados confiáveis e conformidade com todas as normas técnicas do INCRA e órgãos reguladores.</p>
+                    <p>Comprometidos com a excelência, desenvolvemos cada projeto com rigor técnico e atenção aos detalhes, assegurando a satisfação completa de nossos clientes.</p>
+                </div>
+                <div class="stats-grid scroll-reveal">
+                    <div class="stat-item">
+                        <span class="stat-number">5+</span>
+                        <span class="stat-label">Anos de Experiência</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">200+</span>
+                        <span class="stat-label">Projetos Concluídos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">100%</span>
+                        <span class="stat-label">Qualidade</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="section services" id="services">
+        <div class="container">
+            <h2 class="section-title scroll-reveal">Nossos Serviços</h2>
+            <p class="section-subtitle scroll-reveal">Oferecemos uma gama completa de serviços especializados em agrimensura e topografia</p>
+            
+            <div class="services-grid">
+                <div class="service-card scroll-reveal">
+                    <div class="service-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <h3>Levantamento Topográfico</h3>
+                    <p>Mapeamento preciso do terreno com tecnologia de ponta para projetos de construção e planejamento urbano.</p>
+                </div>
+                
+                <div class="service-card scroll-reveal">
+                    <div class="service-icon">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <h3>Georreferenciamento</h3>
+                    <p>Georeferenciamento de imóveis rurais conforme normas do INCRA para regularização fundiária.</p>
+                </div>
+                
+                <div class="service-card scroll-reveal">
+                    <div class="service-icon">
+                        <i class="fas fa-draw-polygon"></i>
+                    </div>
+                    <h3>Demarcação de Terrenos</h3>
+                    <p>Demarcação precisa de limites e divisas de propriedades com documentação técnica completa.</p>
+                </div>
+                
+                <div class="service-card scroll-reveal">
+                    <div class="service-icon">
+                        <i class="fas fa-city"></i>
+                    </div>
+                    <h3>Projetos de Loteamento</h3>
+                    <p>Desenvolvimento de projetos completos de parcelamento do solo urbano e rural.</p>
+                </div>
+                
+                <div class="service-card scroll-reveal">
+                    <div class="service-icon">
+                        <i class="fas fa-gavel"></i>
+                    </div>
+                    <h3>Perícias Técnicas</h3>
+                    <p>Laudos periciais e assistência técnica judicial em questões de agrimensura e topografia.</p>
+                </div>
+                
+                <div class="service-card scroll-reveal">
+                    <div class="service-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Cadastro Técnico</h3>
+                    <p>Levantamento cadastral de infraestrutura urbana e rural com precisão milimétrica.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="section team" id="team">
+        <div class="container">
+            <h2 class="section-title scroll-reveal">Nossa Equipe</h2>
+            <p class="section-subtitle scroll-reveal">Profissionais experientes e qualificados para atender suas necessidades</p>
+            
+            <div class="team-grid">
+                <div class="team-card scroll-reveal" data-team-member="jerede">
+                    <div class="team-card-header">
+                        <i class="expand-icon fas fa-chevron-down"></i>
+                        <div class="team-avatar">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h3 class="team-name">Jerede Monteiro</h3>
+                        <p class="team-title">Engenheiro Agrimensor</p>
+                    </div>
+                    <div class="team-content">
+                        <div class="team-description">
+                            <p>Engenheiro Agrimensor com 10+ anos de experiência em levantamentos topográficos e georreferenciamento. Especialista em projetos de loteamento e regularização fundiária.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="team-card scroll-reveal" data-team-member="guilherme">
+                    <div class="team-card-header">
+                        <i class="expand-icon fas fa-chevron-down"></i>
+                        <div class="team-avatar">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <h3 class="team-name">Guilherme Monteiro</h3>
+                        <p class="team-title">Técnico em Agrimensura</p>
+                    </div>
+                    <div class="team-content">
+                        <div class="team-description">
+                            <p>Técnico em Agrimensura com sólida formação em topografia e cadastro técnico. Expertise em demarcação de terrenos e perícias técnicas judiciais.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="team-card scroll-reveal" data-team-member="jorio">
+                    <div class="team-card-header">
+                        <i class="expand-icon fas fa-chevron-down"></i>
+                        <div class="team-avatar">
+                            <i class="fas fa-satellite-dish"></i>
+                        </div>
+                        <h3 class="team-name">Jório</h3>
+                        <p class="team-title">Técnico em Agrimensura</p>
+                    </div>
+                    <div class="team-content">
+                        <div class="team-description">
+                            <p>Profissional especializado em tecnologias de medição e GPS. Experiência em levantamentos de precisão e processamento de dados geoespaciais.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location Section -->
+    <section class="section location" id="location">
+        <div class="container">
+            <h2 class="section-title scroll-reveal">Nossa Localização</h2>
+            <p class="section-subtitle scroll-reveal">Visite nossa sede ou entre em contato conosco</p>
+            
+            <div class="location-grid">
+                <div class="location-info scroll-reveal">
+                    <h3>Endereço &amp; Contato</h3>
+                    
+                    <div class="address-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <strong>Rua Victo Carmanhan, 231</strong><br>
+                            Estância Santo Antônio - Morro Agudo<br>
+                            CEP: 14647-150
+                        </div>
+                    </div>
+                    
+                    <div class="address-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <strong>(16) 98193-8165</strong><br>
+                            WhatsApp e Ligações
+                        </div>
+                    </div>
+                    
+                    <div class="address-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <strong>agromontgeo@gmail.com</strong><br>
+                            E-mail para contato
+                        </div>
+                    </div>
+                    
+                    <div class="address-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <strong>Segunda a Sexta</strong><br>
+                            08:00 às 18:00
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="map-container scroll-reveal">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d932.9556455994403!2d-48.06930999053731!3d-20.717427890334466!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ba33d6330be4f3%3A0x88e0bfb0e8774b8e!2sCondominio%20Est%C3%A2ncia%20Santo%20Antonio!5e0!3m2!1spt-BR!2sbr!4v1760736625251!5m2!1spt-BR!2sbr" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section contact" id="contact">
+        <div class="container">
+            <h2 class="section-title scroll-reveal">Entre em Contato</h2>
+            <p class="section-subtitle scroll-reveal">Solicite seu serviço ou tire suas dúvidas conosco</p>
+            
+            <div class="contact-grid">
+                <form class="contact-form scroll-reveal" id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Nome Completo *</label>
+                        <input type="text" id="name" name="name" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">E-mail *</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Telefone</label>
+                        <input type="tel" id="phone" name="phone" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Mensagem *</label>
+                        <textarea id="message" name="message" class="form-control" rows="5" required placeholder="Descreva seu projeto ou dúvida..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-button">
+                        <i class="fas fa-paper-plane"></i>
+                        Enviar Mensagem
+                    </button>
+                </form>
+                
+                <div class="contact-info scroll-reveal">
+                    <h3>Fale Conosco</h3>
+                    <p>Estamos prontos para atender suas necessidades em agrimensura e topografia. Entre em contato e solicite seu orçamento sem compromisso.</p>
+                    
+                    <div class="address-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <strong>(16) 98193-8165</strong><br>
+                            WhatsApp disponível
+                        </div>
+                    </div>
+                    
+                    <div class="address-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <strong>agromontgeo@gmail.com</strong><br>
+                            Resposta em até 24h
+                        </div>
+                    </div>
+                    
+                    <div class="address-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <strong>Atendimento</strong><br>
+                            Segunda a Sexta: 08:00 - 18:00
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4><i class="fas fa-map-marked-alt"></i> AgroMont Agrimensura</h4>
+                <p>Precisão e tecnologia em topografia. Soluções completas para seus projetos de agrimensura.</p>
+                <p><strong>Rua Victo Carmanhan, 231</strong><br>
+                Estância Santo Antônio<br>
+                Morro Agudo - SP, 14647-150</p>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Links Rápidos</h4>
+                <ul>
+                    <li><a href="#home">Início</a></li>
+                    <li><a href="#about">Sobre Nós</a></li>
+                    <li><a href="#services">Serviços</a></li>
+                    <li><a href="#team">Nossa Equipe</a></li>
+                    <li><a href="#contact">Contato</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Serviços</h4>
+                <ul>
+                    <li><a href="#services">Levantamento Topográfico</a></li>
+                    <li><a href="#services">Georreferenciamento</a></li>
+                    <li><a href="#services">Demarcação de Terrenos</a></li>
+                    <li><a href="#services">Projetos de Loteamento</a></li>
+                    <li><a href="#services">Perícias Técnicas</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Contato</h4>
+                <ul>
+                    <li><i class="fas fa-phone"></i> (16) 98193-8165</li>
+                    <li><i class="fas fa-envelope"></i> agromontgeo@gmail.com</li>
+                    <li><i class="fas fa-clock"></i> Seg-Sex: 08:00-18:00</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 AgroMont Agrimensura. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const themeIcon = themeToggle.querySelector('i');
+        
+        // Store theme in memory (starts with light mode)
+        let currentTheme = 'light';
+        body.setAttribute('data-theme', currentTheme);
+        updateThemeIcon(currentTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            body.setAttribute('data-theme', currentTheme);
+            updateThemeIcon(currentTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.className = 'fas fa-sun';
+            } else {
+                themeIcon.className = 'fas fa-moon';
+            }
+        }
+        
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const navMenu = document.getElementById('navMenu');
+        
+        mobileMenuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+            
+            // Prevent body scroll when menu is open
+            if (navMenu.classList.contains('active')) {
+                body.style.overflow = 'hidden';
+            } else {
+                body.style.overflow = '';
+            }
+        });
+        
+        // Header scroll effect
+        const header = document.getElementById('header');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+        
+        // Team card expansion
+        const teamCards = document.querySelectorAll('.team-card');
+        
+        teamCards.forEach(card => {
+            card.addEventListener('click', () => {
+                // Close all other cards
+                teamCards.forEach(otherCard => {
+                    if (otherCard !== card) {
+                        otherCard.classList.remove('expanded');
+                    }
+                });
+                
+                // Toggle current card
+                card.classList.toggle('expanded');
+            });
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Close mobile menu if open
+                    navMenu.classList.remove('active');
+                    const icon = mobileMenuToggle.querySelector('i');
+                    icon.classList.add('fa-bars');
+                    icon.classList.remove('fa-times');
+                }
+            });
+        });
+        
+        // Scroll reveal animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all scroll-reveal elements with staggered animation
+        document.querySelectorAll('.scroll-reveal').forEach((el, index) => {
+            el.style.animationDelay = `${index * 100}ms`;
+            observer.observe(el);
+        });
+        
+        // Counter animation for statistics
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            
+            counters.forEach(counter => {
+                const target = parseInt(counter.textContent.replace(/\D/g, ''));
+                const suffix = counter.textContent.replace(/\d/g, '');
+                let current = 0;
+                const increment = target / 50; // Animation duration control
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        counter.textContent = target + suffix;
+                        clearInterval(timer);
+                        counter.classList.remove('counting');
+                    } else {
+                        counter.textContent = Math.ceil(current) + suffix;
+                        counter.classList.add('counting');
+                    }
+                }, 40);
+            });
+        }
+        
+        // Trigger counter animation when stats section is visible
+        const statsSection = document.querySelector('.stats-grid');
+        if (statsSection) {
+            const statsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounters();
+                        statsObserver.disconnect();
+                    }
+                });
+            });
+            
+            statsObserver.observe(statsSection);
+        }
+        
+        // Contact form handling
+        const contactForm = document.getElementById('contactForm');
+        
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const submitButton = this.querySelector('.submit-button');
+            
+            // Show loading state
+            const originalText = submitButton.innerHTML;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            submitButton.disabled = true;
+            
+            // Simulate form submission
+            setTimeout(() => {
+                alert('Mensagem enviada com sucesso! Entraremos em contato em breve.');
+                this.reset();
+                
+                // Reset button
+                submitButton.innerHTML = originalText;
+                submitButton.disabled = false;
+            }, 2000);
+        });
+        
+        // Form validation
+        const formInputs = document.querySelectorAll('.form-control');
+        
+        formInputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                validateField(this);
+            });
+            
+            input.addEventListener('input', function() {
+                if (this.classList.contains('error')) {
+                    validateField(this);
+                }
+            });
+        });
+        
+        function validateField(field) {
+            const value = field.value.trim();
+            let isValid = true;
+            
+            // Remove previous error styling
+            field.classList.remove('error');
+            
+            // Required field validation
+            if (field.hasAttribute('required') && !value) {
+                isValid = false;
+            }
+            
+            // Email validation
+            if (field.type === 'email' && value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(value)) {
+                    isValid = false;
+                }
+            }
+            
+            // Add error styling if invalid
+            if (!isValid) {
+                field.classList.add('error');
+                field.style.borderColor = '#ff4444';
+            } else {
+                field.style.borderColor = '#1B5E20';
+            }
+            
+            return isValid;
+        }
+        
+        // Initialize animations on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add a small delay to ensure smooth initial animations
+            setTimeout(() => {
+                document.querySelector('.hero-content').classList.add('revealed');
+            }, 300);
+        });
+        
+        // Parallax effect for hero background
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.hero');
+            if (parallax) {
+                const speed = scrolled * 0.5;
+                parallax.style.backgroundPositionY = speed + 'px';
+            }
+        });
+        
+        // Add ripple effect to buttons
+        function addRippleEffect(button) {
+            button.classList.add('ripple');
+            
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple-effect');
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        }
+        
+        // Apply ripple effect to buttons
+        document.querySelectorAll('.cta-button, .submit-button, .theme-toggle').forEach(addRippleEffect);
+        
+        // Enhanced parallax effect
+        function updateParallax() {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.hero');
+            
+            parallaxElements.forEach(element => {
+                const speed = 0.5;
+                element.style.backgroundPositionY = -(scrolled * speed) + 'px';
+            });
+        }
+        
+        window.addEventListener('scroll', updateParallax);
+        
+        // Add CSS for form error states and ripple effect
+        const style = document.createElement('style');
+        style.textContent = `
+            .ripple-effect {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.6);
+                transform: scale(0);
+                animation: ripple-animation 0.6s linear;
+                pointer-events: none;
+            }
+            
+            @keyframes ripple-animation {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+            .form-control.error {
+                border-color: #ff4444 !important;
+                box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.1) !important;
+            }
+            
+            .form-control.error:focus {
+                border-color: #ff4444 !important;
+                box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.2) !important;
+            }
+            
+            /* Ripple Effect */
+            .ripple {
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .ripple::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 0;
+                height: 0;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.5);
+                transform: translate(-50%, -50%);
+                transition: width 0.6s, height 0.6s;
+            }
+            
+            .ripple:active::before {
+                width: 300px;
+                height: 300px;
+            }
+            
+            /* Floating animation for icons */
+            .floating {
+                animation: float 3s ease-in-out infinite;
+            }
+            
+            /* Enhanced scroll reveal with different directions */
+            .scroll-reveal-left {
+                opacity: 0;
+                transform: translateX(-50px);
+                transition: all 0.8s ease;
+            }
+            
+            .scroll-reveal-right {
+                opacity: 0;
+                transform: translateX(50px);
+                transition: all 0.8s ease;
+            }
+            
+            .scroll-reveal-left.revealed,
+            .scroll-reveal-right.revealed {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            
+            /* Dark mode transitions for all elements */
+            * {
+                transition: background-color var(--animation-duration-normal) var(--animation-easing-standard),
+                           color var(--animation-duration-normal) var(--animation-easing-standard),
+                           border-color var(--animation-duration-normal) var(--animation-easing-standard);
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Add floating animation to service icons
+        setTimeout(() => {
+            document.querySelectorAll('.service-icon').forEach((icon, index) => {
+                icon.style.animationDelay = `${index * 0.2}s`;
+                icon.classList.add('floating');
+            });
+        }, 1000);
+        
+        // System theme detection
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            currentTheme = 'dark';
+            body.setAttribute('data-theme', 'dark');
+            updateThemeIcon('dark');
+        }
+        
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            const newTheme = e.matches ? 'dark' : 'light';
+            currentTheme = newTheme;
+            body.setAttribute('data-theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+    </script>
+</body>
+</html>
